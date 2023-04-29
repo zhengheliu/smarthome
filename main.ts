@@ -5,7 +5,7 @@
 // 红外热释电传感器: P15
 // DHT11 传感器: P2
 // 电机: AnalogPin P12 + P13
-function openCurtain() {
+function openCurtain () {
     if (curtainOperating) {
         return
     }
@@ -23,14 +23,14 @@ function openCurtain() {
     I2C_LCD1602.BacklightOff()
     curtainOperating = false
 }
-function checkPeople() {
+function checkPeople () {
     if (pins.digitalReadPin(DigitalPin.P15)) {
         basic.showIcon(IconNames.Heart)
     } else {
         basic.clearScreen()
     }
 }
-function closeCurtain() {
+function closeCurtain () {
     if (curtainOperating) {
         return
     }
@@ -54,17 +54,17 @@ input.onButtonPressed(Button.A, function () {
 input.onButtonPressed(Button.B, function () {
     closeCurtain()
 })
-function checkDHT11() {
+function checkDHT11 () {
     dht11_dht22.queryData(
-        DHTtype.DHT11,
-        DigitalPin.P2,
-        true,
-        false,
-        true
+    DHTtype.DHT11,
+    DigitalPin.P2,
+    true,
+    false,
+    true
     )
     temp = dht11_dht22.readData(dataType.temperature)
     humi = dht11_dht22.readData(dataType.humidity)
-    if (!dht11_dht22.readDataSuccessful()) {
+    if (!(dht11_dht22.readDataSuccessful())) {
         return
     }
     I2C_LCD1602.BacklightOn()
