@@ -1,6 +1,8 @@
 // 门: AnalogPin.P8
+// 
 // 窗: AnalogPin.P9
-
+// 
+// 红外热释电传感器: P15
 function openCurtain () {
     if (curtainOperating) {
         return
@@ -18,6 +20,13 @@ function openCurtain () {
     I2C_LCD1602.clear()
     I2C_LCD1602.BacklightOff()
     curtainOperating = false
+}
+function checkPeople () {
+    if (pins.digitalReadPin(DigitalPin.P15)) {
+        basic.showIcon(IconNames.Heart)
+    } else {
+        basic.clearScreen()
+    }
 }
 function closeCurtain () {
     if (curtainOperating) {
@@ -51,5 +60,6 @@ I2C_LCD1602.clear()
 I2C_LCD1602.BacklightOff()
 music.playSoundEffect(music.createSoundEffect(WaveShape.Noise, 5000, 0, 255, 0, 500, SoundExpressionEffect.None, InterpolationCurve.Linear), SoundExpressionPlayMode.UntilDone)
 basic.forever(function () {
-	
+	checkPeople()
+    control.waitMicros(100 * 1000)
 })
