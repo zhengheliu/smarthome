@@ -3,7 +3,9 @@
 // 窗: AnalogPin.P9
 // 
 // 红外热释电传感器: P15
-function openCurtain () {
+// DHT11 传感器: P2
+// 电机: AnalogPin P12 + P13
+function openCurtain() {
     if (curtainOperating) {
         return
     }
@@ -21,14 +23,14 @@ function openCurtain () {
     I2C_LCD1602.BacklightOff()
     curtainOperating = false
 }
-function checkPeople () {
+function checkPeople() {
     if (pins.digitalReadPin(DigitalPin.P15)) {
         basic.showIcon(IconNames.Heart)
     } else {
         basic.clearScreen()
     }
 }
-function closeCurtain () {
+function closeCurtain() {
     if (curtainOperating) {
         return
     }
@@ -52,14 +54,40 @@ input.onButtonPressed(Button.A, function () {
 input.onButtonPressed(Button.B, function () {
     closeCurtain()
 })
+function checkDHT11() {
+    dht11_dht22.queryData(
+        DHTtype.DHT11,
+        DigitalPin.P2,
+        true,
+        false,
+        true
+    )
+    temp = dht11_dht22.readData(dataType.temperature)
+    humi = dht11_dht22.readData(dataType.humidity)
+    if (!dht11_dht22.readDataSuccessful()) {
+        return
+    }
+    I2C_LCD1602.BacklightOn()
+    I2C_LCD1602.ShowString("Temp: " + temp, 0, 0)
+    I2C_LCD1602.ShowString("Humi: " + humi, 0, 1)
+    if (humi > 90) {
+        pins.analogWritePin(AnalogPin.P12, 300)
+        pins.analogWritePin(AnalogPin.P13, 0)
+    } else {
+        pins.analogWritePin(AnalogPin.P12, 0)
+        pins.analogWritePin(AnalogPin.P13, 0)
+    }
+}
+let humi = 0
+let temp = 0
 let curtainOperating = false
 let degree = 0
 pins.servoWritePin(AnalogPin.P9, degree)
 I2C_LCD1602.LcdInit(39)
 I2C_LCD1602.clear()
 I2C_LCD1602.BacklightOff()
-music.playSoundEffect(music.createSoundEffect(WaveShape.Noise, 5000, 0, 255, 0, 500, SoundExpressionEffect.None, InterpolationCurve.Linear), SoundExpressionPlayMode.UntilDone)
 basic.forever(function () {
-	checkPeople()
+    checkPeople()
+    checkDHT11()
     control.waitMicros(100 * 1000)
 })

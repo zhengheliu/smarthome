@@ -5,7 +5,8 @@
         "core": "*",
         "radio": "*",
         "microphone": "*",
-        "i2cLCD1602": "github:makecode-extensions/i2clcd1602#v1.5.0"
+        "i2cLCD1602": "github:makecode-extensions/i2clcd1602#v1.5.0",
+        "pxt-DHT11_DHT22": "github:alankrantas/pxt-dht11_dht22#v0.0.3"
     },
     "files": [
         "main.blocks",
